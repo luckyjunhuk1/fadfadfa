@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Jua&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+    <title>한회이글스 선수 닮은꼴 찾기</title>
+    <meta name="title" content="한회이글스 선수 닮은꼴 찾기">
+    <meta name="subject" content="나와 닮은 한화이글스 인물 맴버를 찾아보세요!">
+    <meta name="keywords" content="한회이글스 선수 닮은꼴 찾기, 인공지능 한회이글스 선수 닮은꼴 찾기, 나와 닮은 연예인, squid game, 얼굴 평가, 한화이글스, 기훈, 상우, 새벽, 일남, 덕수">
+    <meta name="author" content="코난쌤">
+    <link rel="stylesheet" href="style.css">
+    <link rel="canonical" href="https://objective-fermat-373d40.netlify.app/" />
+    <meta property="og:url" content="https://squidgameai.netlify.app/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="한화이글스 인물 닮은꼴" />
+    <meta property="og:description" content="한회이글스 선수 닮은꼴 찾기, 인공지능 한회이글스 선수 닮은꼴 찾기, 나와 닮은 연예인, squid game, 얼굴 평가, 한화이글스, 기훈, 상우, 새벽, 일남, 덕수"
+    />
+    <meta property="og:image" content="./han-001 (4).png" />    
+    <meta name="google-site-verification" content="PD9c4HJRQfHMMuxzKekUbCd8jdX6iIqEqsj2S9p3Cvc" />
+</head>
+
+<body>
+  <script type="text/javascript">
+        const URL= "https://teachablemachine.withgoogle.com/models/X4wpelnZa/";
+        
+        let model, labelContainer, maxPredictions;
+        async function init() {
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+            labelContainer = document.getElementById("label-container");
+            for (let i = 0; i < maxPredictions; i++) {
+                var element = document.createElement("div")
+                element.classList.add("d-flex");
+                labelContainer.appendChild(element);
+            }
+        }
+        async function predict() {
+            var image = document.getElementById("face-image")
+            const prediction = await model.predict(image, false);
+            prediction.sort((a, b) => parseFloat(b.probability) - parseFloat(a.probability));
+        
+            var resultTitle, resultExplain, resultCeleb, resultpic;
+               switch (prediction[0].className) {
+                    case "TK":
+                        resultTitle = "김태균"
+                        resultExplain = "한화의 영원한 4번타자 레전드"
+                        resultCeleb = "NO.52"
+                        resultpic = "./Tk.png"
+                        break;
+                    case "JANG JONG HOON":
+                        resultTitle = "장종훈"
+                        resultExplain = "연습생신화를 쓴 레전드 장종훈"
+                        resultCeleb = "NO.35"
+                        resultpic = "./JANG JONG HOON.jpg"
+                        break;
+                    case "Lee Sung Yeol":
+                        resultTitle = "이성열"
+                        resultExplain = "뽕열표를 날려라 레전드 이성열"
+                        resultCeleb = "NO.50"
+                        resultpic = "./Lee Sung Yeol.png"
+                        break;
+                    case "Yang Sungwoo":
+                        resultTitle = "양성우"
+                        resultExplain = "양양성우로 홈런을 날려라 레전드 양성우"
+                        resultCeleb = "NO.28"
+                        resultpic = "./Yang Sungwoo.jpg"
+                        break;
+                    case "Jung Min Cheol":
+                        resultTitle = "정민철"
+                        resultExplain = "타자들이 칠수없는 공을 던진다 레전드 정민철"
+                        resultCeleb = "NO.23"
+                        resultpic = "./Jung Min Cheol.jpg"
+                        break;    
+                }
+             
+            var title = "<div class='" + prediction[0].className + "-animal-title'>" + resultTitle + "</div>"
+            var explain = "<div class='animal-explain pt-2'>" + resultExplain + "</div>"
+            var celeb = "<div class='" + prediction[0].className + "-animal-celeb pt-2 pb-2'>" + resultCeleb + "</div>"
+            var pic = "<img src='" + resultpic +"'width='60%' heigt='auto'>"
+            $('.result-message').html(pic + title + explain + celeb );
+            console.log(model);
+            var barWidth;
+            
+            for (let i = 0; i < maxPredictions; i++) {
+                if (prediction[i].probability.toFixed(2) > 0.1) {
+                    barWidth = Math.round(prediction[i].probability.toFixed(2) * 100) + "%";
+                } else if (prediction[i].probability.toFixed(2) >= 0.01) {
+                    barWidth = "4%"
+                } else {
+                    barWidth = "2%"
+                }
+                var labelTitle;
+                switch (prediction[i].className) {
+                    case "TK":
+                        labelTitle = "김태균(No:52)"
+                        break;
+                    case "JANG JONG HOON":
+                        labelTitle = "장종훈(No:35)"
+                        break;
+                    case "Lee Sung Yeol":
+                        labelTitle = "이성열(No:50)"
+                        break;
+                    case "Yang Sungwoo":
+                        labelTitle = "양성우(No:28)"
+                        break;
+                    case "Jung Min Cheol":
+                        labelTitle = "정민철(No:23)"
+                        break;    
+ 
+                }
+                var label = "<div class='animal-label d-flex align-items-center'>" + labelTitle + "</div>"
+                
+                // 게이지바 계산
+                var bar = "<div class='bar-container position-relative container'><div class='" + prediction[i].className + "-box'></div><div class='d-flex justify-content-center align-items-center " + prediction[i].className + "-bar' style='width: " + barWidth + "'><span class='d-block percent-text'>" + Math.round(prediction[i].probability.toFixed(2) * 100) + "%</span></div></div>"
+                labelContainer.childNodes[i].innerHTML = label + bar;
+            }
+        }
+    </script>
+    
+    <nav class="p-3 container navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="https://squidgameai.netlify.app/">한화이글스 인물 닮은꼴 테스트</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">한화이글스 인물 닮은꼴 테스트
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" id="yotube-top-link" href="https://www.youtube.com/channel/UCqeurGTkc3KXeEcBO4S_Jyw">코난쌤 유튜브 채널</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <section class="section">
+        <h1 class="title">한화이글스 인물 닮은꼴 테스트</h1>
+        <h2 class="subtitle">얼굴로 보는 한화이글스 인물 닮은꼴 테스트</h2>
+        <h2 class="sr-only">나와 닮은 한화이글스 인물 맴버를 찾아보세요!</h2>
+        <h3 class="sr-only">대표 연예인 사진 데이터로 학습한 인공지능이 나의 얼굴과 비슷한 한화이글스 인물을 찾아드립니다.</h3>
+        <h4 class="sr-only">본 서비스는 Google의 인공지능 teachable machine 2.0을 활용하였습니다.</h4>
+        <p class="sr-only">한회이글스 선수 닮은꼴 찾기, 인공지능 한회이글스 선수 닮은꼴 찾기, 나와 닮은 연예인, squid game, 얼굴 평가, 한화이글스, 기훈, 상우, 새벽, 일남, 덕수</p>
+
+<script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script></div>
+    <section class="youtube pb-3" id="yotube-mid-link">
+        <div class="container mt-3 youtube-cover d-flex flex-row-reverse align-items-center">
+            <img src="img/youtube-copy.jpg" alt="youtube-icon" class="youtube-icon">
+            <a href="https://www.youtube.com/channel/UCnHu8Ib2vOOvSgteoqKLtVg" class="youtube-link">럭키준혁 공식 유튜브 채널</a>
+        </div>
+    </section>
+  
+    <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+    <div class="mt-3 container file-upload">
+        <div class="image-upload-wrap">
+            <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" />
+            <div class="drag-text">
+                <img src="han-001 (3).png" class="mt-5 pt-5 upload">
+            </div>
+        </div>
+        <div class="file-upload-content">
+            <img class="file-upload-image" id="face-image" src="#" alt="your image" />
+            <div id="loading" class="animated bounce">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <p class="text-center">AI가 당신의 얼굴을 분석중입니다.</p>
+            </div>
+            <p class="result-message"></p>
+            <div id="label-container" class="d-flex flex-column justify-content-around"></div>
+            <div id="addThis" class="addthis_inline_share_toolbox_6lz1"></div>
+
+            <div class="pt-3 image-title-wrap">
+                <button type="button p-2" class="try-again-btn" onclick="window.location.reload();">
+                    <span class="try-again-text">다른 사진으로 재시도</span>
+                </button>
+                </div><!-- Go to www.addthis.com/dashboard to customize your tools -->
+                <div class="addthis_inline_share_toolbox"></div>
+            </div>
+        </div>
+    
+    
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('.image-upload-wrap').hide();
+                    $('#loading').show();
+                    $('.file-upload-image').attr('src', e.target.result);
+                    $('.file-upload-content').show();
+                    $('.image-title').html(input.files[0].name);
+                };
+                reader.readAsDataURL(input.files[0]);
+                init().then(function() {
+                    console.log("hello");
+                    predict();
+                    $('#loading').hide();
+                });
+            } else {
+                removeUpload();
+            }
+        }
+
+        function removeUpload() {
+            $('.file-upload-input').replaceWith($('.file-upload-input').clone());
+            $('.file-upload-content').hide();
+            $('.image-upload-wrap').show();
+        }
+        $('.image-upload-wrap').bind('dragover', function() {
+            $('.image-upload-wrap').addClass('image-dropping');
+        });
+        $('.image-upload-wrap').bind('dragleave', function() {
+            $('.image-upload-wrap').removeClass('image-dropping');
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+
+ <!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-61e0fe5c604a5067"></script>   
+</body>
+
+<!-- 
+image input box
+Copyright (c) 2020 by Aaron Vanston (https://codepen.io/aaronvanston/pen/yNYOXR)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+gender toggle
+Copyright (c) 2020 by Mert Cukuren (https://codepen.io/knyttneve/pen/bPpEZY)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ -->
+<footer class="footer pt-5 container d-flex justify-content-center">
+        <div>
+            <p>&copy; 럭키준혁  2022. 교육적 목적으로만 재사용가능합니다. </p>
+        </div>
+                
+            
+    </footer>
+</html>
